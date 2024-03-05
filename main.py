@@ -21,7 +21,8 @@ def Developer(dev: Union[str,None] = None):
         if free.empty:
             lista.append({'Año':df, 'Cantidad de items':total.item(), 'Contenido Free':f'{0}%'})
         else:
-            lista.append({'Año':df, 'Cantidad de items':total.item(), 'Contenido Free':f'{round(free['count'].sum()*100/total,2).item()}%'})
+            free_porcentaje = round(free['count'].sum()*100/total,2).item()
+            lista.append({'Año':df, 'Cantidad de items':total.item(), 'Contenido Free':f'{free_porcentaje}%'})
     print(lista)
     return lista
 

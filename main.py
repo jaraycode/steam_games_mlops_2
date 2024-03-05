@@ -15,16 +15,15 @@ def Developer(dev: Union[str,None] = None):
     df_consulta.sort_values('año', inplace=True)
     lista = []
     for df in df_consulta['año'].unique():
-        print('Funciona')
         aux = df_consulta[df_consulta['año'] == df]
         total = aux['count'].sum()
         free = aux[aux['price'] == 0.00]
         if free.empty:
-            lista.append({'Año':df, 'Cantidad de items':total, 'Contenido Free':f'{0}%'})
+            lista.append({'Año':df, 'Cantidad de items':total.item(), 'Contenido Free':f'{0}%'})
         else:
-            lista.append({'Año':df, 'Cantidad de items':total, 'Contenido Free':f'{round(free['count'].sum()*100/total,2)}%'})
-    return {'Contenido free':lista}
-    pass
+            lista.append({'Año':df, 'Cantidad de items':total.item(), 'Contenido Free':f'{round(free['count'].sum()*100/total,2).item()}%'})
+    print(lista)
+    return lista
 
 @app.get('/User_Data/{user_id:str}')
 def User_Data(user_id: Union[str,None] = None):
@@ -46,8 +45,13 @@ def UserForGenre(genre: Union[str,None] = None):
     users = pd.read_parquet('DatasetFinal/UserForGenre.parquet')
 
     if genre in users['genres'].unique():
-        regreso = users[users['genres'] == genre].max()
-        return {f'Usuario con más horas jugadas para el genero {genre}':regreso['user_id'], 'Horas jugadas: (año:horas)':regreso['playtime_forever']}
+        regreso = users[users['genres'] == genre]
+        regreso = regreso[regreso['user_id'] == regreso.max()['user_id']]
+        regreso['playtime_forever'] = regreso['playtime_forever'].apply(lambda x : round(x,0))
+        regreso.set_index('año',inplace=True)
+        regreso2 = regreso.to_dict()
+
+        return {f'Usuario con más horas jugadas para el genero {genre}':regreso.max()['user_id'], 'Horas jugadas: (año:horas)':regreso2['playtime_forever']}
     else:
         return {"Error":"No ha sido posible encontrar la información"}
 

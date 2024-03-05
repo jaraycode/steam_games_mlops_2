@@ -57,7 +57,7 @@ Entender que estas dependencias funcionan con todos los archivos presentes.
 * Usar el siguiente comando para iniciar la API.
 
   ```
-  uvicorn app:app --host 127.0.0.1 --port 8000
+  uvicorn main:app --host 127.0.0.1 --port 8000
   ```
 * Ingresar a "http://127.0.0.1:8000/docs" para poder visualizar todas las consultas disponibles.
 
